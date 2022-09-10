@@ -1,5 +1,4 @@
-// eslint-disable-next-line
-import { Children, createContext, useReducer, useEffect } from 'react'
+import { createContext, useReducer, useEffect } from 'react'
 import { projectAuth } from '../firebase/config'
 
 export const AuthContext = createContext()
