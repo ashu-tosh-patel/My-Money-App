@@ -4,38 +4,31 @@ import { useAuthContext } from "./useAuthContext"
 
 
 
-export const useSignup = () => {
+export const useLogout = () => {
     const [isCancelled, setIsCancelled] = useState(false)
     const [error, setError] = useState(null)
     const [isPending, setIsPending] = useState(false)
     const { dispatch } = useAuthContext()
 
-    const signup = async (email, password, displayName) => {
+    const logout = async () => {
         setError(null)
         setIsPending(true)
 
+        //sign the user out
         try {
-            //signup user
-            const res = await projectAuth.createUserWithEmailAndPassword(email, password)
+            await projectAuth.signOut()
 
+            //dispatch logout action
+            dispatch({ type: 'LOGOUT' })
 
-            if (!res) {
-                throw new Error('Could not signup')
-            }
-
-            // add display name to user's profile
-            await res.user.updateProfile({ displayName })
-
-            //dispatch login action 
-            dispatch({ type: 'LOGIN', payload: res.user })
 
             //update states
             if (!isCancelled) {
                 setIsPending(false)
                 setError(null)
             }
-        }
-        catch (err) {
+
+        } catch (err) {
             if (!isCancelled) {
                 console.log(err.message)
                 setError(err.message)
@@ -44,7 +37,6 @@ export const useSignup = () => {
         }
     }
 
-
     useEffect(() => {
 
         return () => {
@@ -52,5 +44,5 @@ export const useSignup = () => {
         }
     }, [])
 
-    return { error, isPending, signup }
+    return { logout, error, isPending }
 }
